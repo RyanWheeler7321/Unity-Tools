@@ -3,4 +3,12 @@
         <OutputType>Library</OutputType>
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="UnityEngine">
+            <HintPath>C:\Program Files\Unity\Hub\Editor\YOUR_UNITY_VERSION\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEditor">
+            <HintPath>C:\Program Files\Unity\Hub\Editor\YOUR_UNITY_VERSION\Editor\Data\Managed\UnityEditor\UnityEditor.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>
