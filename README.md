@@ -14,4 +14,4 @@ Singleton to handle all SFX and music needs. For SFX, soundbank scriptable objec
 Music functionality can play looped tracks from a set list, fade in orout music, or play music with hits. A music hit is a sound with a starting section that leads into a looped section.
 
 ## Util
-Static class containing many useful tools for any function, example calls of a few are commented at the bottom. Functions include delayed reactions, progressive actions, calculations, randomness, object referencing, and more.
+Static class containing many useful tools and tricks for a bunch of helpful functions to speed up development, example calls of a few are commented at the bottom. Functions include delayed reactions, progressive actions, calculations, randomness, object referencing, and more.
