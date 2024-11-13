@@ -1,5 +1,4 @@
-# Ignore the temp project file used for VS Code error checking
-UnityTools.csproj
+Scripts/UnityTools.csproj
 
 # Unity generated files
 [Ll]ibrary/
