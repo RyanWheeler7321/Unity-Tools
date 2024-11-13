@@ -4,12 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
-using StarterAssets;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using TMPro;
 
 public class MAIN : MonoBehaviour
 {
@@ -38,7 +36,7 @@ public class MAIN : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-        
+
         QualitySettings.vSyncCount = 0;
     }
 
@@ -69,7 +67,7 @@ public class MAIN : MonoBehaviour
     void DebugCommands()
     {
         if (!Keyboard.current.leftShiftKey.IsActuated())
-           return;
+            return;
 
         if (Keyboard.current.digit0Key.wasPressedThisFrame)
         {
@@ -222,7 +220,7 @@ public class MAIN : MonoBehaviour
         {
             yield return null;
         }
-        
+
         loadingNewLevel = false;
     }
 
