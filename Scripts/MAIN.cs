@@ -12,18 +12,18 @@ using UnityEngine.Rendering.Universal;
 public class MAIN : MonoBehaviour
 {
     #region Singleton
-    public static MAIN x;
+    public static MAIN instance;
 
     private void Awake()
     {
-        if (x)
+        if (instance)
         {
             Destroy(gameObject);
             return;
         }
         else
         {
-            x = this;
+            instance = this;
         }
 
         DontDestroyOnLoad(gameObject);
@@ -32,9 +32,9 @@ public class MAIN : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (x == this)
+        if (instance == this)
         {
-            x = null;
+            instance = null;
         }
     }
     #endregion
