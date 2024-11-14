@@ -14,7 +14,7 @@ Data storage script for saving custom data to a file. Singleton can be reference
 ### Sound
 Handles most SFX and music needs. Static calls from any script make it easy to implement. For SFX, soundbank scriptable object can be created to group many sounds and play random ones, or to simply keep related sounds together. Pooling is implemented for SFX to improve performance. Has pitch and volume variation, with options for 3D SFX, UI SFX, reverb, importance ranking, and panning.
 
-Music functionality can play looped tracks from a set list, fade in or out music, or play music with a starting section that lead into a looped section.
+Music functionality can play looped tracks from a set list, fade in or out music, adjust volume, and play music with a starting section that leads into a looped section to work with gameplay scenarios.
 
 ### Util
 Static class containing many useful tools and tricks for a bunch of helpful functions to speed up development, example calls of a few are commented at the bottom. Functions include delayed reactions, progressive actions, random calculations, object referencing, and more.
