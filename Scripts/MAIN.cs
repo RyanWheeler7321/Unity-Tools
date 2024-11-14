@@ -11,16 +11,7 @@ using UnityEngine.Rendering.Universal;
 
 public class MAIN : MonoBehaviour
 {
-    public bool canPause = false;
-
-    public bool usingController = false;
-
-    public bool debugCommands = false;
-
-    public bool cursorActive = false;
-
-    public AudioMixer mixer;
-
+    #region Singleton
     public static MAIN x;
 
     private void Awake()
@@ -36,13 +27,7 @@ public class MAIN : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-
         QualitySettings.vSyncCount = 0;
-    }
-
-    private void Start()
-    {
-
     }
 
     private void OnDestroy()
@@ -52,18 +37,42 @@ public class MAIN : MonoBehaviour
             x = null;
         }
     }
+    #endregion
 
-    // Update is called once per frame
-    void Update()
+    #region Public Variables
+    [Header("General Settings")]
+    public bool canPause = false;
+    public bool usingController = false;
+    public bool debugCommands = false;
+    public bool cursorActive = false;
+    public AudioMixer mixer;
+    [Header("UI Elements")]
+    public Image loadingBar;
+    public Image faderImage;
+    #endregion
+
+    #region Private Variables
+    private bool loadingNewLevel;
+    private Coroutine currentFadeCoroutine;
+    #endregion
+
+    #region Unity Methods
+    private void Start()
+    {
+        // Initialization if needed
+    }
+
+    private void Update()
     {
         if (debugCommands)
         {
             DebugCommands();
         }
     }
+    #endregion
 
-    #region  Debug
-
+    #region Debug Methods
+    // Handles debug commands when debug mode is enabled
     void DebugCommands()
     {
         if (!Keyboard.current.leftShiftKey.IsActuated())
@@ -72,46 +81,39 @@ public class MAIN : MonoBehaviour
         if (Keyboard.current.digit0Key.wasPressedThisFrame)
         {
             Debug.Log("Timescale 1");
-
             Time.timeScale = 1f;
         }
         if (Keyboard.current.digit9Key.wasPressedThisFrame)
         {
             Debug.Log("Timescale 16");
-
             Time.timeScale = 16f;
         }
         if (Keyboard.current.digit8Key.wasPressedThisFrame)
         {
             Debug.Log("Timescale 4");
-
             Time.timeScale = 4f;
         }
         if (Keyboard.current.digit7Key.wasPressedThisFrame)
         {
             Debug.Log("Timescale 0.1");
-
             Time.timeScale = 0.1f;
         }
         if (Keyboard.current.digit3Key.wasPressedThisFrame)
         {
             Debug.Log("Reloading current scene");
-
             int index = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadSceneAsync(index);
         }
         if (Keyboard.current.leftBracketKey.wasPressedThisFrame)
         {
             Debug.Log("Development Build Error Console set to Visible");
-
             Debug.developerConsoleVisible = true;
         }
     }
-
     #endregion
 
-    #region UI and Cursor States
-
+    #region UI and Cursor Methods
+    // Sets the cursor visibility and lock state
     public void SetCursor(bool active)
     {
         cursorActive = active;
@@ -122,13 +124,10 @@ public class MAIN : MonoBehaviour
             Cursor.visible = active;
         }
     }
-
     #endregion
 
-    #region  Level Loading
-
-    public bool loadingNewLevel;
-
+    #region Level Loading Methods
+    // Initiates the process to load a level asynchronously
     public void LoadLevel(string name, Color startFadeColor)
     {
         if (loadingNewLevel)
@@ -138,6 +137,7 @@ public class MAIN : MonoBehaviour
         StartCoroutine(LoadSceneAsync(name, startFadeColor));
     }
 
+    // Loads a level instantly without a loading screen
     public void LoadLevelInstant(string name)
     {
         if (loadingNewLevel)
@@ -147,18 +147,22 @@ public class MAIN : MonoBehaviour
         StartCoroutine(LoadSceneInstantAsync(name));
     }
 
-    AsyncOperation LoadMyScene(string name)
+    // Loads a level by build index
+    public void LoadLevel(int index, Color startFadeColor)
     {
-        return SceneManager.LoadSceneAsync(name);
+        if (loadingNewLevel)
+            return;
+
+        loadingNewLevel = true;
+        string scenePath = SceneUtility.GetScenePathByBuildIndex(index);
+        string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+        StartCoroutine(LoadSceneAsync(sceneName, startFadeColor));
     }
 
-    public Image loadingBar;
-
-
+    // Asynchronously loads a scene with a fade transition
     private IEnumerator LoadSceneAsync(string name, Color startFadeColor)
     {
         Fade(startFadeColor, Color.black, 0.5f);
-
         yield return new WaitForSeconds(0.5f);
 
         AsyncOperation asyncOperation = LoadMyScene(name);
@@ -169,53 +173,42 @@ public class MAIN : MonoBehaviour
         // Loading progress is reported between 0 and 0.9
         while (asyncOperation.progress < 0.9f)
         {
-            // Lerp the fill amount for smooth transition
             fillAmount = asyncOperation.progress;
             loadingBar.fillAmount = fillAmount;
-
             yield return null;
         }
 
         yield return new WaitForSeconds(0.5f);
-
         asyncOperation.allowSceneActivation = true;
+
         while (!asyncOperation.isDone)
         {
             yield return null;
         }
 
         yield return new WaitForSeconds(0.2f);
-
-
         loadingBar.fillAmount = 1f;
-
         yield return new WaitForSeconds(0.2f);
-
-
         loadingBar.fillAmount = 0f;
 
         Fade(Color.black, Color.clear, 0.5f);
-
         loadingNewLevel = false;
-
         yield return new WaitForSeconds(0.5f);
     }
 
+    // Instantly loads a scene asynchronously
     private IEnumerator LoadSceneInstantAsync(string name)
     {
         AsyncOperation asyncOperation = LoadMyScene(name);
-        asyncOperation.allowSceneActivation = false; // Prevent Unity from loading the scene when it's ready
+        asyncOperation.allowSceneActivation = false;
 
-        // Wait for the scene to be almost loaded (90% done in Unity)
         while (asyncOperation.progress < 0.9f)
         {
             yield return null;
         }
 
-        // To control when the scene is actually activated, we set allowSceneActivation to true only after the new scene is ready.
         asyncOperation.allowSceneActivation = true;
 
-        // Wait until the scene is fully active
         while (!asyncOperation.isDone)
         {
             yield return null;
@@ -224,30 +217,15 @@ public class MAIN : MonoBehaviour
         loadingNewLevel = false;
     }
 
-    public void LoadLevel(int index, Color startFadeColor)
+    // Wrapper for SceneManager.LoadSceneAsync
+    private AsyncOperation LoadMyScene(string name)
     {
-        if (loadingNewLevel)
-            return;
-
-        loadingNewLevel = true;
-
-        // Get the scene path by the build index
-        string scenePath = SceneUtility.GetScenePathByBuildIndex(index);
-
-        // Extract the scene name from the path (last part after the last '/')
-        string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
-
-        StartCoroutine(LoadSceneAsync(sceneName, startFadeColor));
+        return SceneManager.LoadSceneAsync(name);
     }
-
     #endregion
 
-    #region  Fading
-
-    public Image faderImage;
-
-    private Coroutine currentFadeCoroutine;
-
+    #region Fade Methods
+    // Initiates a fade transition
     public void Fade(Color startColor, Color fadeColor, float time)
     {
         if (currentFadeCoroutine != null)
@@ -258,7 +236,8 @@ public class MAIN : MonoBehaviour
         currentFadeCoroutine = StartCoroutine(FadeCor(startColor, fadeColor, time));
     }
 
-    public IEnumerator FadeCor(Color startColor, Color fadeColor, float time)
+    // Coroutine to handle fading between two colors over a specified time
+    private IEnumerator FadeCor(Color startColor, Color fadeColor, float time)
     {
         float timer = 0;
         while (timer < time)
@@ -269,11 +248,7 @@ public class MAIN : MonoBehaviour
         }
 
         faderImage.color = fadeColor;
-
         currentFadeCoroutine = null;
     }
-
-
     #endregion
-
 }
