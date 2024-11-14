@@ -3,39 +3,46 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
-public class Save : MonoBehaviour
+public class SaveManager : MonoBehaviour
 {
-    public static Save x;
+    // Singleton instance of SaveManager
+    public static SaveManager instance;
+
+    // Save file name and type
+    private const string FILE_NAME = "/data.datatype";
+
+    // Game data to be saved/loaded
+    public GameData gameData;
+
     private void Awake()
     {
-        if (x != null)
+        // Ensure only one instance of SaveManager exists
+        if (instance != null)
         {
             Destroy(gameObject);
             return;
         }
-        x = this;
+        instance = this;
+        DontDestroyOnLoad(gameObject);
         LoadGame();
     }
 
     private void Update()
     {
-        if (data != null)
+        // Update the game time if gameData exists
+        if (gameData != null)
         {
-            data.gameTime += time.deltaTime;
+            gameData.gameTime += Time.deltaTime;
         }
     }
 
-    public GameData data;
-
-    //You can use any file name and type you want
-    const string fileName = "/data.datatype";
-
+    /// <summary>
+    /// Returns the full file path for the save file.
+    /// </summary>
     private string GetFilePath()
     {
-        return Application.persistentDataPath + fileName;
+        return Application.persistentDataPath + FILE_NAME;
     }
-
-    public Color[] shirtColors;
 
     [System.Serializable]
     public class Data
@@ -48,36 +55,39 @@ public class Save : MonoBehaviour
     public class GameData
     {
         public float gameTime;
-        public List<string> mainData; // Any boolean trigger
-        public int mainProgress;
-
-        //Custom data here, you can make your own data structures for this
-        public Data[] datas;
+        public List<string> mainData; // Holds the names of triggered events
+        public int mainStoryProgress;
+        public Data[] dataUnits; // Custom data to hold any specific information
     }
 
+    /// <summary>
+    /// Checks if a specific key is present in the game data.
+    /// </summary>
     public bool Check(string key)
     {
-        return data.mainData.Contains(key);
+        return gameData.mainData.Contains(key);
     }
 
-
+    /// <summary>
+    /// Creates default game data if no save file exists.
+    /// </summary>
     private void CreateDefaultData()
     {
-        data = new GameData
+        gameData = new GameData
         {
             gameTime = 0f,
             mainData = new List<string>(),
             mainStoryProgress = 0,
-            dataUnits = new Data[10];
+            dataUnits = new Data[10]
         };
 
-        // Initialize default values for each world
-        for (int i = 0; i < 10; i++)
+        // Initialize default values for each data unit
+        for (int i = 0; i < gameData.dataUnits.Length; i++)
         {
-            data.worlds[i] = new World
+            gameData.dataUnits[i] = new Data
             {
-                example1 = 0f;
-                example2 = false;
+                example1 = 0f,
+                example2 = false
             };
         }
 
@@ -85,6 +95,9 @@ public class Save : MonoBehaviour
         SaveGame();
     }
 
+    /// <summary>
+    /// Saves the current game data to a file.
+    /// </summary>
     public void SaveGame()
     {
         try
@@ -92,7 +105,7 @@ public class Save : MonoBehaviour
             using (FileStream stream = new FileStream(GetFilePath(), FileMode.Create))
             {
                 BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(stream, data);
+                bf.Serialize(stream, gameData);
                 Debug.Log("Saved Data Successfully");
             }
         }
@@ -102,18 +115,19 @@ public class Save : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Loads the game data from a file if it exists.
+    /// </summary>
     public void LoadGame()
     {
         if (File.Exists(GetFilePath()))
         {
-            //Debug.Log("Save Data Found");
             try
             {
                 using (FileStream stream = new FileStream(GetFilePath(), FileMode.Open))
                 {
                     BinaryFormatter bf = new BinaryFormatter();
-                    data = (GameData)bf.Deserialize(stream);
+                    gameData = (GameData)bf.Deserialize(stream);
                     Debug.Log("Data found and Loaded");
                 }
             }
@@ -129,6 +143,9 @@ public class Save : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Deletes the save file if it exists.
+    /// </summary>
     public void DeleteFile()
     {
         if (File.Exists(GetFilePath()))
