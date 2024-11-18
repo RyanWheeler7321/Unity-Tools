@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Tracker : MonoBehaviour
@@ -16,7 +14,12 @@ public class Tracker : MonoBehaviour
 
     public bool autoTrackPlayer;
 
+    public bool followRotation;
+
     public float lookaheadFactor = 1.0f;
+
+    public float strength = 0.1f; // 0 = no lerp, higher = slower lerp
+    public float rotationStrength = 0.1f;
 
     private Vector3 lastTrackedPosition;
 
@@ -39,21 +42,30 @@ public class Tracker : MonoBehaviour
 
     void Update()
     {
+        // Position Tracking
         Vector3 velocity = (trackedObject.position - lastTrackedPosition) / Time.deltaTime;
         lastTrackedPosition = trackedObject.position;
 
-        Vector3 newPosition = trackedObject.position + offset;
+        Vector3 targetPosition = trackedObject.position + offset;
 
         if (lookahead)
         {
-            newPosition += velocity * lookaheadFactor;
+            targetPosition += velocity * lookaheadFactor;
         }
 
         if (lockY)
         {
-            newPosition.y = startY;
+            targetPosition.y = startY;
         }
 
-        transform.position = newPosition;
+        // Smooth position update
+        transform.position = Vector3.Lerp(transform.position, targetPosition, Mathf.Clamp01(strength * Time.deltaTime));
+
+        // Rotation Tracking
+        if (followRotation)
+        {
+            Quaternion targetRotation = trackedObject.rotation;
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Mathf.Clamp01(rotationStrength * Time.deltaTime));
+        }
     }
 }
