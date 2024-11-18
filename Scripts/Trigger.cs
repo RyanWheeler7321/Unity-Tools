@@ -3,6 +3,8 @@ using UnityEngine.Events;
 
 public class Trigger : MonoBehaviour
 {
+    public string triggerTag = "Player";
+
     // Define a UnityEvent for customization in the Inspector.
     public UnityEvent onTriggerEnterEvent;
 
@@ -15,7 +17,7 @@ public class Trigger : MonoBehaviour
     bool fired;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag(triggerTag))
         {
             if (!fired)
             {
@@ -33,7 +35,7 @@ public class Trigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag(triggerTag))
         {
             if (!exitFired)
             {
@@ -50,7 +52,7 @@ public class Trigger : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag(triggerTag))
         {
             onTriggerStayEvent.Invoke();
         }
