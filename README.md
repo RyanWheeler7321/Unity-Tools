@@ -20,3 +20,12 @@ Music functionality can play looped tracks from a set list, fade in or out music
 
 ### Util
 Utility class containing many useful tools and tricks for a bunch of helpful functions to speed up development. These functions are static and can be called from any script without issue, coroutines are started and stored on the script doing the calling. Example calls of each fuction are commented below the function's declaration, and can be easily copied and pasted with the inner logic adjusted. Some examples of these helpful functions include delayed reactions, progressive actions, random calculations, object referencing, and more. 
+
+### AnimatorEventPasser
+Unity's Mechanim animation events can only reference scripts on the object the animator is on, so this script can be used to fire an action on any object referenced in the inspector. 9 slots are available for simple fired events, and the option to pass a string into the event allows for as many as you want.
+
+### Trigger
+A trigger collider should be placed on the same object to trigger collision enter, exit, and stay events easily by referencing any object in the inspector. Only triggered by objects with specified tag, default being "Player".
+
+### Tracker
+Movement script to make a transform follow the movement of a separate target object. Options for lookahead, damping, following rotation, automatically tracking the player, and locking y-movement.
