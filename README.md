@@ -28,4 +28,4 @@ Unity's Mechanim animation events can only reference scripts on the object the a
 A trigger collider should be placed on the same object to trigger collision enter, exit, and stay events easily by referencing any object in the inspector. Only triggered by objects with specified tag, default being "Player".
 
 ### Tracker
-Movement script to make a transform follow the movement of a separate target object. Options for lookahead, damping, following rotation, automatically tracking the player, and locking y-movement.
+Movement script to make a transform follow the movement of a separate target object. Has options for lookahead, damping, following rotation, automatically tracking the player, and locking y-movement.
