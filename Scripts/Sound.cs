@@ -202,7 +202,7 @@ public class Sound : MonoBehaviour
     public Soundbank mainBank;
     public Soundbank uiBank;
     public AudioMixer mixer;
-    private List<AudioSource> pausedSources;
+    private List<AudioSource> pausedSources = new List<AudioSource>();
 
     // Pause all currently playing sounds
     public void PauseSounds()
@@ -256,6 +256,7 @@ public class Sound : MonoBehaviour
     {
         AudioClip audio = uiBank.sounds[uiBankIndex];
         AudioSource availableSource = uisources.FirstOrDefault(s => !s.isPlaying) ?? CreateUISoundSource();
+        if (availableSource == null) return null;
         SetSourceData(availableSource, audio, Vector3.zero, volume, pitch, priority, pan);
         availableSource.Play();
         return availableSource;
@@ -283,6 +284,7 @@ public class Sound : MonoBehaviour
     public AudioSource PlaySound(AudioClip audio, Vector3 position, float volume, float pitch, int priority, float panValue)
     {
         AudioSource availableSource = sources.FirstOrDefault(s => !s.isPlaying) ?? CreateSoundSource(position);
+        if (availableSource == null) return null;
         SetSourceData(availableSource, audio, position, volume, pitch, priority, panValue);
         availableSource.Play();
         return availableSource;
@@ -322,6 +324,7 @@ public class Sound : MonoBehaviour
     #endregion
 }
 
+[System.Serializable]
 public class AmbienceSource
 {
     public AudioSource mySource;

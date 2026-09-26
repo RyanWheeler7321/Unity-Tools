@@ -1,3 +1,5 @@
+<img src="icon.svg" alt="Unity Tools icon" width="96">
+
 # Unity Tools
 Set of C# scripts for Unity with a bunch of simple and useful functions.
 
@@ -8,9 +10,9 @@ This is a central singleton for the main manager of all gameobjects and logic. G
 ### OptionsMenu
 Options menu script handling local saving of primary game settings, like volume and display options like resolution and quality. Adjusts volume values to match decibel calculations, converts necessary options data between types, and automatically saves the data locally via PlayerPrefs. 
 
-This specific script cannot be simply dropped into a project since it is implemented with a custom horizontal selector interface, so a similar implementation must be created and hooked in or a separate UI for the menu should be created.
+This specific script cannot be simply dropped into a project since it is implemented with a custom horizontal selector interface (and a few of my other scripts like Localize, Inputs and BorderUI, plus Unity's Starter Assets), so a similar implementation must be created and hooked in or a separate UI for the menu should be created.
 
-### Save
+### SaveManager
 Data storage script for saving game data and custom data to a file. Singleton allows easy referencing from any script. Anything serializable can be stored, even custom classes. Starter data contains boolean triggers, example custom data, with default values.
 
 ### Sound

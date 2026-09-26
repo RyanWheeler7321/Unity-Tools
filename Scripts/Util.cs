@@ -200,6 +200,13 @@ public class Util : MonoBehaviour
     /// </summary>
     public static IEnumerator DoOverTimeWithProgressEasing(Action<float> constantActionWithProgress, Action endAction, float time)
     {
+        if (time <= 0f)
+        {
+            constantActionWithProgress(1f);
+            endAction();
+            yield break;
+        }
+
         float timer = 0f;
         while (timer < time)
         {

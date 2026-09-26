@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EventPasser : MonoBehaviour
+public class AnimatorEventPasser : MonoBehaviour
 {
     public UnityEvent<string> stringEvent;
 

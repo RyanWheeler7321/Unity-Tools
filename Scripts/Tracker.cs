@@ -33,6 +33,12 @@ public class Tracker : MonoBehaviour
                 trackedObject = player.transform;
             }
         }
+        if (trackedObject == null)
+        {
+            Debug.LogWarning("Tracker has no tracked object, disabling.");
+            enabled = false;
+            return;
+        }
         if (lockY)
         {
             startY = transform.position.y;
@@ -43,7 +49,8 @@ public class Tracker : MonoBehaviour
     void Update()
     {
         // Position Tracking
-        Vector3 velocity = (trackedObject.position - lastTrackedPosition) / Time.deltaTime;
+        // deltaTime is 0 while paused
+        Vector3 velocity = Time.deltaTime > 0 ? (trackedObject.position - lastTrackedPosition) / Time.deltaTime : Vector3.zero;
         lastTrackedPosition = trackedObject.position;
 
         Vector3 targetPosition = trackedObject.position + offset;

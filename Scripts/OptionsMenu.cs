@@ -85,7 +85,7 @@ public class OptionsMenu : MonoBehaviour
     // Handles disabling the options menu through input
     public void InputDisableOptionsMenu()
     {
-        Sound.x.PlayUIBankSound(9, 0.5f, 0.03f, 0.9f, 0.02f, 80, 0);
+        Sound.instance.PlayUIBankSound(9, 0.5f, 0.03f, 0.9f, 0.02f, 80, 0);
         DisableOptionsMenu();
     }
 
@@ -216,7 +216,7 @@ public class OptionsMenu : MonoBehaviour
             if (deleteFileTimer > 5f && !quitting)
             {
                 quitting = true;
-                Save.x.DeleteFile();
+                SaveManager.instance.DeleteFile();
                 // PauseMenu.x.QuitButton();
             }
         }
